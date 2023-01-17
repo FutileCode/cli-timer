@@ -20,26 +20,27 @@ func main() {
 
 	v, _ := time.ParseDuration(*totalTime)
 
-	formattedTime := time.Now().Add(v).Format("2006-01-02T15:04:05") + "+01:00"
+	formattedTime := time.Now().Add(v).Format("2006-01-02T15:04:05") + "+00:00"
 
 	parsedTime, _ := time.Parse(time.RFC3339, formattedTime)
 
-	fmt.Printf("Staring timer for %v \n", v)
+	//fmt.Printf("Staring timer for %v \n", v)
 
 	timeLeft := getTimeLeft(parsedTime)
-	fmt.Printf("%02d : %02d : %02d : %02d\n", timeLeft.d, timeLeft.h, timeLeft.m, timeLeft.s)
 
+	fmt.Print("\033[H\033[2J")
+	fmt.Printf("%02d : %02d : %02d : %02d\n", timeLeft.d, timeLeft.h, timeLeft.m, timeLeft.s)
 	for range time.Tick(1 * time.Second) {
 		timeLeft := getTimeLeft(parsedTime)
 
+		fmt.Print("\033[H\033[2J")
+		fmt.Printf("%02d : %02d : %02d : %02d\n", timeLeft.d, timeLeft.h, timeLeft.m, timeLeft.s)
 		if timeLeft.t <= 0 {
 			fmt.Println(strings.Repeat("-", 30))
-			fmt.Println("Time ended")
+			fmt.Printf("Time ended: %v\n", v)
 			fmt.Println(strings.Repeat("-", 30))
 			os.Exit(1)
 		}
-
-		fmt.Printf("%02d : %02d : %02d : %02d\n", timeLeft.d, timeLeft.h, timeLeft.m, timeLeft.s)
 	}
 }
 
